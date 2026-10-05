@@ -4,27 +4,27 @@
 
 <br>
 
-<a href="https://github.com/perrarancino/Cobu/releases/latest/download/CoBu-Setup.exe"><img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_%D0%B4%D0%BB%D1%8F_Windows-CoBu--Setup.exe-00E676?style=for-the-badge&labelColor=0D0F1B" alt="Скачать для Windows"></a>
+<a href="https://github.com/perrarancino/Cobu/releases/latest/download/CoBu-Setup.exe"><img src="https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_%D0%B4%D0%BB%D1%8F_Windows-CoBu--Setup.exe-3DFF9A?style=for-the-badge&logo=windows&logoColor=white&labelColor=0D0F1B" alt="Скачать для Windows"></a>
 &nbsp;
-<a href="https://github.com/perrarancino/Cobu/releases/latest/download/CoBu-Portable.zip"><img src="https://img.shields.io/badge/%F0%9F%93%A6_Portable-.zip-69F0AE?style=for-the-badge&labelColor=0D0F1B" alt="Portable"></a>
+<a href="https://github.com/perrarancino/Cobu/releases/latest/download/CoBu-Portable.zip"><img src="https://img.shields.io/badge/Portable-.zip-69F0AE?style=for-the-badge&logo=7zip&logoColor=white&labelColor=0D0F1B" alt="Portable"></a>
 &nbsp;
-<a href="https://github.com/perrarancino/Cobu/stargazers"><img src="https://img.shields.io/github/stars/perrarancino/Cobu?style=for-the-badge&logo=github&logoColor=white&color=FFD54F&labelColor=0D0F1B&label=%E2%AD%90%20%D0%97%D0%B2%D1%91%D0%B7%D0%B4%D1%8B" alt="Звёзды"></a>
+<a href="https://github.com/perrarancino/Cobu/stargazers"><img src="https://img.shields.io/github/stars/perrarancino/Cobu?style=for-the-badge&logo=github&logoColor=white&color=FFD54F&labelColor=0D0F1B&label=%D0%97%D0%B2%D1%91%D0%B7%D0%B4%D1%8B" alt="Звёзды"></a>
 
 <p>
-  <a href="#-о-программе"><b>О программе</b></a> &nbsp;·&nbsp;
-  <a href="#-возможности"><b>Возможности</b></a> &nbsp;·&nbsp;
-  <a href="#-установка"><b>Установка</b></a> &nbsp;·&nbsp;
-  <a href="#-управление"><b>Управление</b></a> &nbsp;·&nbsp;
-  <a href="#-сборка-из-исходников"><b>Сборка</b></a> &nbsp;·&nbsp;
+  <a href="#о-программе"><b>О программе</b></a> &nbsp;·&nbsp;
+  <a href="#возможности"><b>Возможности</b></a> &nbsp;·&nbsp;
+  <a href="#установка"><b>Установка</b></a> &nbsp;·&nbsp;
+  <a href="#управление"><b>Управление</b></a> &nbsp;·&nbsp;
+  <a href="#сборка-из-исходников"><b>Сборка</b></a> &nbsp;·&nbsp;
   <a href="https://github.com/perrarancino/Cobu/issues"><b>Баги и идеи</b></a>
 </p>
 
-<a href="https://github.com/perrarancino/Cobu/releases/latest"><img src="https://img.shields.io/github/v/release/perrarancino/Cobu?style=flat-square&logo=github&color=00E676&labelColor=0D0F1B" alt="Версия"></a>
+<a href="https://github.com/perrarancino/Cobu/releases/latest"><img src="https://img.shields.io/github/v/release/perrarancino/Cobu?style=flat-square&logo=github&logoColor=white&color=3DFF9A&labelColor=0D0F1B" alt="Версия"></a>
 <a href="https://github.com/perrarancino/Cobu/releases"><img src="https://img.shields.io/github/downloads/perrarancino/Cobu/total?style=flat-square&logo=githubactions&logoColor=white&color=69F0AE&labelColor=0D0F1B" alt="Скачиваний"></a>
-<a href="LICENSE"><img src="https://img.shields.io/github/license/perrarancino/Cobu?style=flat-square&color=8E9AAF&labelColor=0D0F1B" alt="Лицензия"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/perrarancino/Cobu?style=flat-square&color=C9D1D9&labelColor=0D0F1B" alt="Лицензия"></a>
 <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=flat-square&logo=windows11&logoColor=white&labelColor=0D0F1B" alt="Windows 10 и 11">
 <img src="https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet&logoColor=white&labelColor=0D0F1B" alt=".NET 10">
-<img src="https://img.shields.io/github/last-commit/perrarancino/Cobu?style=flat-square&logo=git&logoColor=white&color=00C853&labelColor=0D0F1B" alt="Последний коммит">
+<img src="https://img.shields.io/github/last-commit/perrarancino/Cobu?style=flat-square&logo=git&logoColor=white&color=3DFF9A&labelColor=0D0F1B" alt="Последний коммит">
 
 <br><br>
 
@@ -34,7 +34,7 @@
 
 <br>
 
-## 💡 О программе
+## <img src="https://api.iconify.design/lucide/info.svg?color=%2300E676&height=26" height="26" align="absmiddle"> О программе
 
 **CoBu** (Copy Buffer) — лёгкий менеджер буфера обмена. Он сам запоминает всё, что вы копируете: текст, ссылки, скриншоты и картинки. Любую запись можно вернуть в буфер одним кликом.
 
@@ -53,34 +53,34 @@
 
 <br>
 
-## ✨ Возможности
+## <img src="https://api.iconify.design/lucide/sparkles.svg?color=%2300E676&height=26" height="26" align="absmiddle"> Возможности
 
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h3>🪶 Лёгкая</h3>
+      <h3><img src="https://api.iconify.design/lucide/feather.svg?color=%2300E676&height=22" height="22" align="absmiddle"> Лёгкая</h3>
       Опрос буфера не нужен: CoBu слушает системное уведомление Windows. В трее занимает около 50 МБ, процессор в простое не нагружает. Память не растёт со временем: список виртуализирован, большие тексты лежат на диске, а скрытое окно возвращает память системе.
     </td>
     <td width="33%" valign="top">
-      <h3>🖼️ Текст и картинки</h3>
+      <h3><img src="https://api.iconify.design/lucide/image.svg?color=%2300E676&height=22" height="22" align="absmiddle"> Текст и картинки</h3>
       Тексты сохраняются как <code>.txt</code>, изображения как <code>.png</code>. Точные дубликаты не плодятся: запись просто поднимается наверх.
     </td>
     <td width="33%" valign="top">
-      <h3>⭐ Закрепление</h3>
+      <h3><img src="https://api.iconify.design/lucide/star.svg?color=%2300E676&height=22" height="22" align="absmiddle"> Закрепление</h3>
       Нужные записи можно закрепить звездой, и они не вытеснятся лимитом истории.
     </td>
   </tr>
   <tr>
     <td valign="top">
-      <h3>🔒 Приватность</h3>
+      <h3><img src="https://api.iconify.design/lucide/lock.svg?color=%2300E676&height=22" height="22" align="absmiddle"> Приватность</h3>
       Всё хранится только на вашем диске, рядом с программой. То, что менеджеры паролей помечают как секрет, CoBu не записывает.
     </td>
     <td valign="top">
-      <h3>🚀 Тихий автозапуск</h3>
+      <h3><img src="https://api.iconify.design/lucide/rocket.svg?color=%2300E676&height=22" height="22" align="absmiddle"> Тихий автозапуск</h3>
       С Windows стартует сразу в трей, без выезжающего окна.
     </td>
     <td valign="top">
-      <h3>🪟 Красивое стеклянное окно</h3>
+      <h3><img src="https://api.iconify.design/lucide/app-window.svg?color=%2300E676&height=22" height="22" align="absmiddle"> Красивое стеклянное окно</h3>
       Тёмное матовое стекло, плавные анимации, векторные иконки.
     </td>
   </tr>
@@ -88,7 +88,7 @@
 
 <br>
 
-## 📥 Установка
+## <img src="https://api.iconify.design/lucide/download.svg?color=%2300E676&height=26" height="26" align="absmiddle"> Установка
 
 **1.** Скачайте **[CoBu-Setup.exe](https://github.com/perrarancino/Cobu/releases/latest/download/CoBu-Setup.exe)**.<br>
 **2.** Запустите. Установщик сам проверит [.NET Desktop Runtime 10](https://dotnet.microsoft.com/download/dotnet/10.0) и, если его нет, предложит скачать и поставить.<br>
@@ -103,19 +103,19 @@
 
 <br>
 
-## 🎮 Управление
+## <img src="https://api.iconify.design/lucide/keyboard.svg?color=%2300E676&height=26" height="26" align="absmiddle"> Управление
 
 | | Действие | Как |
 |:-:|---|---|
-| 👁️ | Показать / скрыть окно | `Alt + V` (в настройках есть ещё `Ctrl + Shift + V`, `Ctrl + ~`, `Alt + C`, `Win + Shift + V`) |
-| 📋 | Скопировать запись обратно | Клик по карточке |
-| ⭐ | Закрепить запись | Звезда на карточке |
-| ❌ | Закрыть окно | `Esc` или `✕` |
-| ⚙️ | Меню, настройки, выход | Правый клик по значку в трее |
+| <img src="https://api.iconify.design/lucide/eye.svg?color=%2300E676&height=20" height="20"> | Показать / скрыть окно | `Alt + V` (в настройках есть ещё `Ctrl + Shift + V`, `Ctrl + ~`, `Alt + C`, `Win + Shift + V`) |
+| <img src="https://api.iconify.design/lucide/clipboard-copy.svg?color=%2300E676&height=20" height="20"> | Скопировать запись обратно | Клик по карточке |
+| <img src="https://api.iconify.design/lucide/star.svg?color=%2300E676&height=20" height="20"> | Закрепить запись | Звезда на карточке |
+| <img src="https://api.iconify.design/lucide/x.svg?color=%2300E676&height=20" height="20"> | Закрыть окно | `Esc` или `✕` |
+| <img src="https://api.iconify.design/lucide/settings.svg?color=%2300E676&height=20" height="20"> | Меню, настройки, выход | Правый клик по значку в трее |
 
 <br>
 
-## 🔧 Сборка из исходников
+## <img src="https://api.iconify.design/lucide/wrench.svg?color=%2300E676&height=26" height="26" align="absmiddle"> Сборка из исходников
 
 Нужен [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
@@ -160,7 +160,7 @@ Cobu/
 
 <br>
 
-## 📄 Лицензия
+## <img src="https://api.iconify.design/lucide/scale.svg?color=%2300E676&height=26" height="26" align="absmiddle"> Лицензия
 
 [MIT](LICENSE)
 
@@ -168,7 +168,7 @@ Cobu/
 
 <div align="center">
 
-### ⭐ Понравился CoBu?
+### <img src="https://api.iconify.design/lucide/star.svg?color=%23FFD54F&height=26" height="26" align="absmiddle"> Понравился CoBu?
 
 Если CoBu пригодился, поставьте звезду репозиторию: так проект проще найти другим.
 
