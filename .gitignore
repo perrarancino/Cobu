@@ -1,0 +1,20 @@
+# Build output
+bin/
+obj/
+publish/
+dist/
+*.wpftmp.csproj
+*_wpftmp.csproj
+
+# Personal clipboard history: never commit it
+CoBu_Storage/
+crash.log
+
+# Generated installer artwork (made by installer/make-wizard-images.ps1 on demand)
+installer/assets/
+
+# Local helper files
+*.lnk
+Запустить CoBu.bat
+.vs/
+*.user

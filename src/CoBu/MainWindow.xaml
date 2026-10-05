@@ -1,0 +1,824 @@
+<Window x:Class="CoBu.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CoBu"
+        xmlns:converters="clr-namespace:CoBu.Converters"
+        xmlns:models="clr-namespace:CoBu.Models"
+        mc:Ignorable="d"
+        Title="CoBu"
+        Width="460" Height="640"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True"
+        KeyDown="Window_KeyDown">
+
+    <Window.Resources>
+        <converters:ImageFileConverter x:Key="ImageFileConverter"/>
+        <converters:ClipTypeToTextConverter x:Key="ClipTypeToTextConverter"/>
+        <converters:BooleanToVisibilityInvertedConverter x:Key="BoolToVisInverted"/>
+        <converters:NullOrEmptyToVisibilityConverter x:Key="NullOrEmptyToVis"/>
+        <converters:AuraThemeToBackgroundConverter x:Key="AuraToBgConverter"/>
+        <converters:AuraThemeToRimConverter x:Key="AuraToRimConverter"/>
+        <converters:AuraThemeToAccentConverter x:Key="AuraToAccentConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- Context Menu for Tray with Vibrant Glass & Neon Badges -->
+        <ContextMenu x:Key="TrayContextMenu" StaysOpen="False" HasDropShadow="False" Opened="TrayContextMenu_Opened">
+            <ContextMenu.Template>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border Background="{StaticResource MidnightCanvasBgBrush}"
+                            BorderBrush="{StaticResource FrostedGlassRimBrush}"
+                            BorderThickness="1.5"
+                            CornerRadius="16"
+                            Padding="6"
+                            Width="260"
+                            ClipToBounds="True">
+                        <Grid>
+                            <!-- Ambient Lime Glow in Tray Menu -->
+                            <Ellipse Width="180" Height="150" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-45,-50,0" Opacity="0.22">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush>
+                                        <GradientStop Color="#00E676" Offset="0.0"/>
+                                        <GradientStop Color="#0000E676" Offset="1.0"/>
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <StackPanel IsItemsHost="True"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </ContextMenu.Template>
+            <ContextMenu.Resources>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="FontSize" Value="13"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Padding" Value="10,8"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="StaysOpenOnClick" Value="False"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type MenuItem}">
+                                <Border x:Name="border" Background="Transparent" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ContentPresenter Grid.Column="0" ContentSource="Icon" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsHighlighted" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#30FFFFFF"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style TargetType="{x:Type Separator}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Separator}">
+                                <Border Height="1" Background="#20FFFFFF" Margin="6,4"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ContextMenu.Resources>
+            <MenuItem Click="TrayMenu_Toggle_Click">
+                <MenuItem.Icon>
+                    <Border Width="26" Height="26" CornerRadius="6" Background="#2600E676">
+                        <Path Data="M12,4.5C7,4.5 2.73,7.61 1,12c1.73,4.39 6,7.5 11,7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12,17c-2.76,0-5-2.24-5-5s2.24-5 5-5 5,2.24 5,5-2.24,5-5,5zm0-8c-1.66,0-3,1.34-3,3s1.34,3 3,3 3-1.34 3-3-1.34-3-3-3z"
+                              Fill="#00E676" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </MenuItem.Icon>
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Показать / Скрыть" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                        <Border Background="#20FFFFFF" CornerRadius="4" Padding="5,1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Alt + V" FontSize="10" Foreground="#00E676" FontWeight="Bold"/>
+                        </Border>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Click="TrayMenu_OpenFolder_Click">
+                <MenuItem.Icon>
+                    <Border Width="26" Height="26" CornerRadius="6" Background="#2600C853">
+                        <Path Data="M10,4H4c-1.1,0-1.99,0.9-1.99,2L2,18c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8c0-1.1-0.9-2-2-2h-8l-2-2z"
+                              Fill="#00E676" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </MenuItem.Icon>
+                <MenuItem.Header>
+                    <TextBlock Text="Папка с файлами" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Click="OpenSettings_Click">
+                <MenuItem.Icon>
+                    <Border Width="26" Height="26" CornerRadius="6" Background="#2669F0AE">
+                        <Path Data="M19.14,12.94c0.04-0.3 0.06-0.61 0.06-0.94 0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14 0.23-0.41 0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87c-0.12,0.21-0.08,0.47 0.12,0.61l2.03,1.58c-0.05,0.3-0.09,0.63-0.09,0.94s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44-0.17 0.47-0.41l0.36-2.54c0.59-0.24 1.13-0.56 1.62-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59-0.22l1.92-3.32c0.12-0.22 0.07-0.47-0.12-0.61l-2.01-1.58zM12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6,1.62 3.6,3.6-1.62,3.6-3.6,3.6z"
+                              Fill="#69F0AE" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </MenuItem.Icon>
+                <MenuItem.Header>
+                    <TextBlock Text="Настройки" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                </MenuItem.Header>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Click="TrayMenu_Exit_Click">
+                <MenuItem.Icon>
+                    <Border Width="26" Height="26" CornerRadius="6" Background="#26FF5252">
+                        <Path Data="M10.09,15.59L11.5,17l5-5-5-5-1.41,1.41L12.67,11H3v2h9.67l-2.58,2.59zM19,3H5c-1.11,0-2,0.9-2,2v4h2V5h14v14H5v-4H3v4c0,1.1,0.89,2,2,2h14c1.1,0,2-0.9,2-2V5c0-1.1-0.9-2-2-2z"
+                              Fill="#FF5252" Width="14" Height="14" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </MenuItem.Icon>
+                <MenuItem.Header>
+                    <TextBlock Text="Выход" Foreground="#FF8A80" VerticalAlignment="Center"/>
+                </MenuItem.Header>
+            </MenuItem>
+        </ContextMenu>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Root Glass Container with Translucent Frosted Glass & Specular Rim -->
+        <Border x:Name="RootBorder"
+                Margin="0"
+                CornerRadius="26"
+                Background="{StaticResource MidnightCanvasBgBrush}"
+                BorderBrush="{StaticResource FrostedGlassRimBrush}"
+                BorderThickness="1.5"
+                Opacity="0">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="WindowScale" CenterX="215" CenterY="310" ScaleX="1" ScaleY="1"/>
+                    <TranslateTransform x:Name="WindowTranslate" Y="0"/>
+                </TransformGroup>
+            </Border.RenderTransform>
+
+            <Grid>
+                <!-- AMBIENT FROSTED GLOW BACKLIGHT (Cascading Green Aesthetics - Shared) -->
+                <Grid ClipToBounds="True">
+                    <!-- Top-right Ambient Electric Lime diffuse glow (Peak intensity where 1st card lives) -->
+                    <!-- Glows are soft radial gradients (no BlurEffect: it renders in software and costs tens of MB) -->
+                    <Ellipse Width="380" Height="330" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-110,-100,0" Opacity="0.28">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#00E676" Offset="0.0"/>
+                                <GradientStop Color="#0000E676" Offset="1.0"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+
+                    <!-- Center-left Deep Emerald diffuse glow (~60% intensity) -->
+                    <Ellipse Width="350" Height="310" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-130,-20,0,0" Opacity="0.20">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#00C853" Offset="0.0"/>
+                                <GradientStop Color="#0000C853" Offset="1.0"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+
+                    <!-- Bottom-right Subtle Forest Mint diffuse glow (Deep ambient foundation) -->
+                    <Ellipse Width="320" Height="280" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-90,-90" Opacity="0.14">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#007A33" Offset="0.0"/>
+                                <GradientStop Color="#00007A33" Offset="1.0"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Grid>
+ 
+                <!-- ==================== 1. CLIPS VIEW (MAIN SCREEN) ==================== -->
+                <Grid x:Name="ClipsView" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <!-- Header with Folder, Alt+V badge, Settings, and Close -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Filter Chips -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Cards List (Maximized) -->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- MINIMALIST HEADER -->
+                <Border Grid.Row="0"
+                        Background="#0DFFFFFF"
+                        CornerRadius="24,24,0,0"
+                        BorderBrush="#15FFFFFF"
+                        BorderThickness="0,0,0,1"
+                        Padding="14,10"
+                        MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Open Storage Folder Button -->
+                        <Button Grid.Column="0"
+                                Style="{StaticResource FrostedIconButton}"
+                                ToolTip="Открыть папку с сохранёнными файлами"
+                                Click="OpenFolder_Click">
+                            <Path Data="{StaticResource GeomFolder}"
+                                  Stroke="#FFFFFF"
+                                  StrokeThickness="1.6"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  StrokeLineJoin="Round"
+                                  Width="15" Height="15"
+                                  Stretch="Uniform"/>
+                        </Button>
+
+                        <!-- Center: Sleek Hotkey Badge & Draggable Space -->
+                        <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Border CornerRadius="12"
+                                    Background="#22FFFFFF"
+                                    BorderBrush="#35FFFFFF"
+                                    BorderThickness="1"
+                                    Padding="12,4"
+                                    Cursor="SizeAll">
+                                <TextBlock x:Name="HeaderHotkeyBadge"
+                                           Text="Alt + V"
+                                           FontSize="11.5"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FFFFFF"/>
+                            </Border>
+                        </Grid>
+
+                        <!-- Right: Settings Gear + Close Button -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Settings Button -->
+                            <Button Style="{StaticResource FrostedIconButton}"
+                                    ToolTip="Настройки"
+                                    Margin="0,0,6,0"
+                                    Click="OpenSettings_Click">
+                                <Path Data="{StaticResource GeomSettings}"
+                                      Stroke="#FFFFFF"
+                                      StrokeThickness="1.6"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Width="14" Height="14"
+                                      Stretch="Uniform"/>
+                            </Button>
+
+                            <!-- Close Button -->
+                            <Button Style="{StaticResource FrostedIconButton}"
+                                    ToolTip="Скрыть (Alt+V)"
+                                    Click="CloseButton_Click">
+                                <Path Data="{StaticResource GeomClose}"
+                                      Stroke="#FFFFFF"
+                                      StrokeThickness="1.8"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Width="12" Height="12"
+                                      Stretch="Uniform"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- FILTERS BAR -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="14,12,14,8">
+                    <RadioButton Content="Все" Style="{StaticResource FrostedFilterChip}" IsChecked="True" Checked="Filter_Checked" Tag="All" Margin="0,0,6,0"/>
+                    <RadioButton Content="Текст" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Text" Margin="0,0,6,0"/>
+                    <RadioButton Content="Картинки" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Image" Margin="0,0,6,0"/>
+                    <RadioButton Content="Закреплённые" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Pinned"/>
+                </StackPanel>
+
+                <!-- CLIPS LIST (Frosted Glass Folder Widgets) -->
+                <Grid Grid.Row="2" Margin="14,4,14,12">
+                    <!-- Empty placeholder message -->
+                        <StackPanel x:Name="EmptyPlaceholder"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Margin="20,70"
+                                    Visibility="Collapsed">
+                            <Path Data="{StaticResource GeomFolder}"
+                                  Stroke="#40FFFFFF"
+                                  StrokeThickness="1.5"
+                                  Width="42" Height="42"
+                                  Stretch="Uniform"
+                                  HorizontalAlignment="Center"
+                                  Margin="0,0,0,12"/>
+                            <TextBlock Text="История пока пуста" FontSize="15" FontWeight="SemiBold" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Скопируйте текст или изображение (Ctrl + C),&#x0a;и они автоматически сохранятся сюда!"
+                                       FontSize="12"
+                                       Foreground="#80FFFFFF"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+
+                        <!-- Items List -->
+                        <!-- The ScrollViewer lives inside the ItemsControl template so the panel is really virtualized:
+                             only the visible cards exist in memory (a ScrollViewer wrapped around the ItemsControl disables it). -->
+                        <ItemsControl x:Name="ClipsList"
+                                      VirtualizingPanel.IsVirtualizing="True"
+                                      VirtualizingPanel.VirtualizationMode="Recycling"
+                                      VirtualizingPanel.ScrollUnit="Pixel"
+                                      ScrollViewer.CanContentScroll="True">
+                            <ItemsControl.Template>
+                                <ControlTemplate TargetType="{x:Type ItemsControl}">
+                                    <ScrollViewer x:Name="ClipsScrollViewer"
+                                                  Style="{StaticResource ModernScrollViewer}"
+                                                  Focusable="False"
+                                                  CanContentScroll="True"
+                                                  VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:ClipItem}">
+                                    <!-- FROSTED FOLDER SQUIRCLE CARD -->
+                                    <Border CornerRadius="22"
+                                            Background="{Binding AuraTheme, Converter={StaticResource AuraToBgConverter}}"
+                                            BorderBrush="{Binding AuraTheme, Converter={StaticResource AuraToRimConverter}}"
+                                            BorderThickness="1.2"
+                                            Margin="0,0,0,11"
+                                            Padding="15,13"
+                                            Cursor="Hand"
+                                            MouseLeftButtonUp="Card_MouseLeftButtonUp">
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <!-- Card Header: Metadata + Pin / Action Buttons -->
+                                                <RowDefinition Height="Auto"/>
+                                                <!-- Card Body: Content (Text or Image) -->
+                                                <RowDefinition Height="Auto"/>
+                                                <!-- Copied feedback banner -->
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- CARD HEADER -->
+                                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Metadata Badges -->
+                                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <!-- Type Pill with Vector Icon -->
+                                                    <Border Background="#35000000" CornerRadius="7" Padding="7,3" Margin="0,0,8,0">
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <!-- Vector doc icon for text -->
+                                                            <Path Data="{StaticResource GeomTextDoc}"
+                                                                  Stroke="{Binding AuraTheme, Converter={StaticResource AuraToAccentConverter}}"
+                                                                  StrokeThickness="1.5"
+                                                                  Width="11" Height="11"
+                                                                  Stretch="Uniform"
+                                                                  Margin="0,0,4,0"
+                                                                  VerticalAlignment="Center">
+                                                                <Path.Style>
+                                                                    <Style TargetType="{x:Type Path}">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static models:ClipType.Text}">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Path.Style>
+                                                            </Path>
+
+                                                            <!-- Vector image icon for image -->
+                                                            <Path Data="{StaticResource GeomImageFrame}"
+                                                                  Stroke="{Binding AuraTheme, Converter={StaticResource AuraToAccentConverter}}"
+                                                                  StrokeThickness="1.5"
+                                                                  Width="11" Height="11"
+                                                                  Stretch="Uniform"
+                                                                  Margin="0,0,4,0"
+                                                                  VerticalAlignment="Center">
+                                                                <Path.Style>
+                                                                    <Style TargetType="{x:Type Path}">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static models:ClipType.Image}">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Path.Style>
+                                                            </Path>
+
+                                                            <TextBlock Text="{Binding Type, Converter={StaticResource ClipTypeToTextConverter}}"
+                                                                       FontSize="11"
+                                                                       FontWeight="SemiBold"
+                                                                       Foreground="{Binding AuraTheme, Converter={StaticResource AuraToAccentConverter}}"/>
+                                                        </StackPanel>
+                                                    </Border>
+
+                                                    <!-- Timestamp -->
+                                                    <TextBlock Text="{Binding FormattedTime}" FontSize="11" FontWeight="Medium" Foreground="#E0FFFFFF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                                                    <!-- File Size -->
+                                                    <TextBlock Text="{Binding FileSize}" FontSize="11" Foreground="#90FFFFFF" VerticalAlignment="Center"/>
+                                                </StackPanel>
+
+                                                <!-- Action Buttons: Pin, Download (for images), Open file, Delete -->
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <!-- Pin Button -->
+                                                    <Button Style="{StaticResource CardActionButton}"
+                                                            Margin="0,0,5,0"
+                                                            ToolTip="Закрепить вверху"
+                                                            Click="ItemPin_Click">
+                                                        <Grid>
+                                                            <!-- Unpinned Outline Star -->
+                                                            <Path Data="{StaticResource GeomStarOutline}"
+                                                                  Stroke="#A0FFFFFF"
+                                                                  StrokeThickness="1.4"
+                                                                  Width="11" Height="11"
+                                                                  Stretch="Uniform">
+                                                                <Path.Style>
+                                                                    <Style TargetType="{x:Type Path}">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsPinned}" Value="True">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Path.Style>
+                                                            </Path>
+
+                                                            <!-- Pinned Filled Star (Golden Yellow) -->
+                                                            <Path Data="{StaticResource GeomStarFilled}"
+                                                                  Fill="#FFD54F"
+                                                                  Stroke="#FFD54F"
+                                                                  StrokeThickness="1"
+                                                                  Width="11" Height="11"
+                                                                  Stretch="Uniform">
+                                                                <Path.Style>
+                                                                    <Style TargetType="{x:Type Path}">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsPinned}" Value="True">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Path.Style>
+                                                            </Path>
+                                                        </Grid>
+                                                    </Button>
+
+                                                    <!-- Download / Save to Selected Folder Button (Only for images) -->
+                                                    <Button Margin="0,0,5,0"
+                                                            ToolTip="Скачать в выбранную папку..."
+                                                            Click="ItemDownload_Click">
+                                                        <Button.Style>
+                                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource CardActionButton}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static models:ClipType.Image}">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                        <Path Data="{StaticResource GeomDownload}"
+                                                              Stroke="#B0FFFFFF"
+                                                              StrokeThickness="1.5"
+                                                              StrokeStartLineCap="Round"
+                                                              StrokeEndLineCap="Round"
+                                                              Width="11" Height="11"
+                                                              Stretch="Uniform"/>
+                                                    </Button>
+
+                                                    <!-- Open File in default viewer -->
+                                                    <Button Style="{StaticResource CardActionButton}"
+                                                            Margin="0,0,5,0"
+                                                            ToolTip="Открыть сохранённый файл"
+                                                            Click="ItemOpenFile_Click">
+                                                        <Path Data="{StaticResource GeomExternalLink}"
+                                                              Stroke="#B0FFFFFF"
+                                                              StrokeThickness="1.5"
+                                                              StrokeStartLineCap="Round"
+                                                              StrokeEndLineCap="Round"
+                                                              Width="11" Height="11"
+                                                              Stretch="Uniform"/>
+                                                    </Button>
+
+                                                    <!-- Delete Button -->
+                                                    <Button Style="{StaticResource CardActionButton}"
+                                                            ToolTip="Удалить из истории"
+                                                            Click="ItemDelete_Click">
+                                                        <Path Data="{StaticResource GeomTrash}"
+                                                              Stroke="#B0FFFFFF"
+                                                              StrokeThickness="1.5"
+                                                              StrokeStartLineCap="Round"
+                                                              StrokeEndLineCap="Round"
+                                                              Width="11" Height="11"
+                                                              Stretch="Uniform"/>
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- CARD BODY: Text Content -->
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding CardText, Mode=OneWay}"
+                                                       FontSize="13.5"
+                                                       FontWeight="Normal"
+                                                       Foreground="#FFFFFF"
+                                                       MaxHeight="80"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       TextWrapping="Wrap"
+                                                       LineHeight="20"
+                                                       Margin="0,2,0,2">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static models:ClipType.Text}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+
+                                            <!-- CARD BODY: Image Content (Frosted Squircle Container) -->
+                                            <Border Grid.Row="1"
+                                                    CornerRadius="16"
+                                                    ClipToBounds="True"
+                                                    Background="#35000000"
+                                                    BorderBrush="#25FFFFFF"
+                                                    BorderThickness="1"
+                                                    HorizontalAlignment="Left"
+                                                    Margin="0,4,0,2">
+                                                <Border.Style>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static models:ClipType.Image}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <Grid>
+                                                    <Image Source="{Binding FullFilePath, Converter={StaticResource ImageFileConverter}}"
+                                                           MaxHeight="130"
+                                                           MaxWidth="380"
+                                                           Stretch="Uniform"
+                                                           SnapsToDevicePixels="True"/>
+                                                    <!-- Image dimensions badge -->
+                                                    <Border Background="#90000000"
+                                                            CornerRadius="6"
+                                                            Padding="5,2"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Bottom"
+                                                            Margin="5">
+                                                        <TextBlock Text="{Binding Dimensions}" FontSize="10" FontWeight="SemiBold" Foreground="White"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Copied feedback popup banner inside card -->
+                                            <Border Grid.Row="2"
+                                                    CornerRadius="10"
+                                                    Background="#40000000"
+                                                    BorderBrush="{Binding AuraTheme, Converter={StaticResource AuraToAccentConverter}}"
+                                                    BorderThickness="1"
+                                                    Padding="9,5"
+                                                    Margin="0,8,0,0"
+                                                    Visibility="{Binding IsCopiedFeedback, Converter={StaticResource BoolToVis}}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="✓" FontWeight="Bold" Foreground="{Binding AuraTheme, Converter={StaticResource AuraToAccentConverter}}" Margin="0,0,6,0"/>
+                                                    <TextBlock Text="Скопировано в буфер обмена!" FontSize="12.5" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                </Grid>
+            </Grid>
+
+            <!-- ==================== 2. SETTINGS VIEW (IN MAIN WINDOW) ==================== -->
+            <Grid x:Name="SettingsView" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <!-- Settings Header with Back, Title, and Close -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Settings Content (Maximized scrollable page) -->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- SETTINGS HEADER (Unified window header) -->
+                <Border Grid.Row="0"
+                        Background="#0DFFFFFF"
+                        CornerRadius="24,24,0,0"
+                        BorderBrush="#15FFFFFF"
+                        BorderThickness="0,0,0,1"
+                        Padding="14,10"
+                        MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Back Button to return to clips list -->
+                        <Button Grid.Column="0"
+                                Style="{StaticResource FrostedIconButton}"
+                                ToolTip="Назад к истории буфера (Esc)"
+                                Click="CloseSettings_Click">
+                            <Path Data="M20,11H7.83l5.59-5.59L12,4l-8,8 8,8 1.41-1.41L7.83,13H20v-2z"
+                                  Fill="#FFFFFF"
+                                  Width="13" Height="13"
+                                  Stretch="Uniform"/>
+                        </Button>
+
+                        <!-- Center: Sleek Header Title & Drag Area -->
+                        <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="SizeAll">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource GeomSettings}"
+                                      Fill="#00E676"
+                                      Width="15" Height="15"
+                                      Stretch="Uniform"
+                                      Margin="0,0,8,0"/>
+                                <TextBlock Text="Настройки CoBu"
+                                           FontSize="13.5"
+                                           FontWeight="Bold"
+                                           Foreground="#FFFFFF"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Right: Close / Hide Window Button -->
+                        <Button Grid.Column="2"
+                                Style="{StaticResource FrostedIconButton}"
+                                ToolTip="Скрыть окно (Alt+V)"
+                                Click="CloseButton_Click">
+                            <Path Data="{StaticResource GeomClose}"
+                                  Stroke="#FFFFFF"
+                                  StrokeThickness="1.8"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Width="12" Height="12"
+                                  Stretch="Uniform"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- SETTINGS CONTENT (Native full-width scrollable page) -->
+                <ScrollViewer Grid.Row="1"
+                              Style="{StaticResource ModernScrollViewer}"
+                              VerticalScrollBarVisibility="Auto"
+                              Margin="16,14,16,16">
+                    <StackPanel>
+                        <!-- 1. Always On Top Toggle -->
+                        <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
+                            <Grid>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Поверх всех приложений" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="Окно не перекрывается другими программами" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="SettingAlwaysOnTop"
+                                          Style="{StaticResource FrostedToggleSwitch}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- 2. Hotkey Selection -->
+                        <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Комбинация клавиш вызова" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                <TextBlock Text="Открывает и скрывает окно из любого места" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,8"/>
+                                <ComboBox x:Name="SettingHotkeyCombo"
+                                          Style="{StaticResource FrostedComboBox}">
+                                    <ComboBoxItem Content="Alt + V"/>
+                                    <ComboBoxItem Content="Ctrl + Shift + V"/>
+                                    <ComboBoxItem Content="Ctrl + ~"/>
+                                    <ComboBoxItem Content="Alt + C"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 3. Animation Style -->
+                        <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Стиль открытия окна" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                <TextBlock Text="Плавный выезд из трея или мягкий переход" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,8"/>
+                                <ComboBox x:Name="SettingAnimationCombo"
+                                          Style="{StaticResource FrostedComboBox}">
+                                    <ComboBoxItem Content="Juicy (Выезд из трея)"/>
+                                    <ComboBoxItem Content="Плавный Fade"/>
+                                    <ComboBoxItem Content="Без анимации"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 4. Windows Autostart -->
+                        <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
+                            <Grid>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Автозапуск с Windows" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="Запускать CoBu тихо в трее при старте системы" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <CheckBox x:Name="SettingAutostart"
+                                          Style="{StaticResource FrostedToggleSwitch}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- 5. History Limit / Auto-cleanup Setting -->
+                        <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                                    <TextBlock Text="Лимит истории буфера" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="Максимум записей (0 — без ограничений)" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <Border Grid.Column="1"
+                                        Background="#25FFFFFF"
+                                        BorderBrush="#35FFFFFF"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Width="85" Height="34"
+                                        VerticalAlignment="Center">
+                                    <TextBox x:Name="SettingMaxItems"
+                                             Text="100"
+                                             FontSize="13"
+                                             FontWeight="Bold"
+                                             Foreground="#00E676"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             VerticalContentAlignment="Center"
+                                             HorizontalContentAlignment="Center"
+                                             CaretBrush="#00E676"
+                                             SelectionBrush="#00E676"
+                                             PreviewTextInput="SettingMaxItems_PreviewTextInput"
+                                             DataObject.Pasting="SettingMaxItems_Pasting"
+                                             MaxLength="5"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Save / Apply Button -->
+                        <Button Content="Сохранить настройки"
+                                Foreground="#FFFFFF"
+                                BorderThickness="0"
+                                FontWeight="Bold"
+                                FontSize="13.5"
+                                Cursor="Hand"
+                                Padding="0,11"
+                                Click="SaveSettings_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border x:Name="btnBorder"
+                                            CornerRadius="14"
+                                            Padding="{TemplateBinding Padding}">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="#00C853" Offset="0.0"/>
+                                                <GradientStop Color="#00E676" Offset="0.55"/>
+                                                <GradientStop Color="#76FF03" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="18" Color="#00E676" Opacity="0.55" Direction="270" ShadowDepth="2"/>
+                                        </Border.Effect>
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="btnBorder" Property="Opacity" Value="0.92"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="btnBorder" Property="Opacity" Value="0.8"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
