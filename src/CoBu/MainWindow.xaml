@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CoBu"
         xmlns:converters="clr-namespace:CoBu.Converters"
         xmlns:models="clr-namespace:CoBu.Models"
+        xmlns:loc="clr-namespace:CoBu.Services"
         mc:Ignorable="d"
         Title="CoBu"
         Width="460" Height="640"
@@ -104,7 +105,7 @@
                 </MenuItem.Icon>
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Показать / Скрыть" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                        <TextBlock Text="{loc:T tray_toggle}" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                         <Border Background="#20FFFFFF" CornerRadius="4" Padding="5,1" Margin="8,0,0,0" VerticalAlignment="Center">
                             <TextBlock Text="Alt + V" FontSize="10" Foreground="#00E676" FontWeight="Bold"/>
                         </Border>
@@ -119,7 +120,7 @@
                     </Border>
                 </MenuItem.Icon>
                 <MenuItem.Header>
-                    <TextBlock Text="Папка с файлами" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    <TextBlock Text="{loc:T tray_folder}" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                 </MenuItem.Header>
             </MenuItem>
             <MenuItem Click="OpenSettings_Click">
@@ -130,7 +131,7 @@
                     </Border>
                 </MenuItem.Icon>
                 <MenuItem.Header>
-                    <TextBlock Text="Настройки" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    <TextBlock Text="{loc:T tray_settings}" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                 </MenuItem.Header>
             </MenuItem>
             <Separator/>
@@ -142,7 +143,7 @@
                     </Border>
                 </MenuItem.Icon>
                 <MenuItem.Header>
-                    <TextBlock Text="Выход" Foreground="#FF8A80" VerticalAlignment="Center"/>
+                    <TextBlock Text="{loc:T tray_exit}" Foreground="#FF8A80" VerticalAlignment="Center"/>
                 </MenuItem.Header>
             </MenuItem>
         </ContextMenu>
@@ -228,7 +229,7 @@
                         <!-- Left: Open Storage Folder Button -->
                         <Button Grid.Column="0"
                                 Style="{StaticResource FrostedIconButton}"
-                                ToolTip="Открыть папку с сохранёнными файлами"
+                                ToolTip="{loc:T tip_open_folder}"
                                 Click="OpenFolder_Click">
                             <Path Data="{StaticResource GeomFolder}"
                                   Stroke="#FFFFFF"
@@ -260,7 +261,7 @@
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                             <!-- Settings Button -->
                             <Button Style="{StaticResource FrostedIconButton}"
-                                    ToolTip="Настройки"
+                                    ToolTip="{loc:T tip_settings}"
                                     Margin="0,0,6,0"
                                     Click="OpenSettings_Click">
                                 <Path Data="{StaticResource GeomSettings}"
@@ -274,7 +275,7 @@
 
                             <!-- Close Button -->
                             <Button Style="{StaticResource FrostedIconButton}"
-                                    ToolTip="Скрыть (Alt+V)"
+                                    ToolTip="{loc:T tip_hide}"
                                     Click="CloseButton_Click">
                                 <Path Data="{StaticResource GeomClose}"
                                       Stroke="#FFFFFF"
@@ -290,10 +291,10 @@
 
                 <!-- FILTERS BAR -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="14,12,14,8">
-                    <RadioButton Content="Все" Style="{StaticResource FrostedFilterChip}" IsChecked="True" Checked="Filter_Checked" Tag="All" Margin="0,0,6,0"/>
-                    <RadioButton Content="Текст" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Text" Margin="0,0,6,0"/>
-                    <RadioButton Content="Картинки" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Image" Margin="0,0,6,0"/>
-                    <RadioButton Content="Закреплённые" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Pinned"/>
+                    <RadioButton Content="{loc:T filter_all}" Style="{StaticResource FrostedFilterChip}" IsChecked="True" Checked="Filter_Checked" Tag="All" Margin="0,0,6,0"/>
+                    <RadioButton Content="{loc:T filter_text}" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Text" Margin="0,0,6,0"/>
+                    <RadioButton Content="{loc:T filter_images}" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Image" Margin="0,0,6,0"/>
+                    <RadioButton Content="{loc:T filter_pinned}" Style="{StaticResource FrostedFilterChip}" Checked="Filter_Checked" Tag="Pinned"/>
                 </StackPanel>
 
                 <!-- CLIPS LIST (Frosted Glass Folder Widgets) -->
@@ -311,8 +312,8 @@
                                   Stretch="Uniform"
                                   HorizontalAlignment="Center"
                                   Margin="0,0,0,12"/>
-                            <TextBlock Text="История пока пуста" FontSize="15" FontWeight="SemiBold" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Скопируйте текст или изображение (Ctrl + C),&#x0a;и они автоматически сохранятся сюда!"
+                            <TextBlock Text="{loc:T empty_title}" FontSize="15" FontWeight="SemiBold" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{loc:T empty_hint}"
                                        FontSize="12"
                                        Foreground="#80FFFFFF"
                                        TextAlignment="Center"
@@ -437,7 +438,7 @@
                                                     <!-- Pin Button -->
                                                     <Button Style="{StaticResource CardActionButton}"
                                                             Margin="0,0,5,0"
-                                                            ToolTip="Закрепить вверху"
+                                                            ToolTip="{loc:T tip_pin}"
                                                             Click="ItemPin_Click">
                                                         <Grid>
                                                             <!-- Unpinned Outline Star -->
@@ -481,7 +482,7 @@
 
                                                     <!-- Download / Save to Selected Folder Button (Only for images) -->
                                                     <Button Margin="0,0,5,0"
-                                                            ToolTip="Скачать в выбранную папку..."
+                                                            ToolTip="{loc:T tip_download}"
                                                             Click="ItemDownload_Click">
                                                         <Button.Style>
                                                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource CardActionButton}">
@@ -505,7 +506,7 @@
                                                     <!-- Open File in default viewer -->
                                                     <Button Style="{StaticResource CardActionButton}"
                                                             Margin="0,0,5,0"
-                                                            ToolTip="Открыть сохранённый файл"
+                                                            ToolTip="{loc:T tip_open_file}"
                                                             Click="ItemOpenFile_Click">
                                                         <Path Data="{StaticResource GeomExternalLink}"
                                                               Stroke="#B0FFFFFF"
@@ -518,7 +519,7 @@
 
                                                     <!-- Delete Button -->
                                                     <Button Style="{StaticResource CardActionButton}"
-                                                            ToolTip="Удалить из истории"
+                                                            ToolTip="{loc:T tip_delete}"
                                                             Click="ItemDelete_Click">
                                                         <Path Data="{StaticResource GeomTrash}"
                                                               Stroke="#B0FFFFFF"
@@ -602,7 +603,7 @@
                                                     Visibility="{Binding IsCopiedFeedback, Converter={StaticResource BoolToVis}}">
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                     <TextBlock Text="✓" FontWeight="Bold" Foreground="{Binding AuraTheme, Converter={StaticResource AuraToAccentConverter}}" Margin="0,0,6,0"/>
-                                                    <TextBlock Text="Скопировано в буфер обмена!" FontSize="12.5" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                                    <TextBlock Text="{loc:T copied}" FontSize="12.5" FontWeight="SemiBold" Foreground="#FFFFFF"/>
                                                 </StackPanel>
                                             </Border>
                                         </Grid>
@@ -640,7 +641,7 @@
                         <!-- Left: Back Button to return to clips list -->
                         <Button Grid.Column="0"
                                 Style="{StaticResource FrostedIconButton}"
-                                ToolTip="Назад к истории буфера (Esc)"
+                                ToolTip="{loc:T tip_back}"
                                 Click="CloseSettings_Click">
                             <Path Data="M20,11H7.83l5.59-5.59L12,4l-8,8 8,8 1.41-1.41L7.83,13H20v-2z"
                                   Fill="#FFFFFF"
@@ -656,7 +657,7 @@
                                       Width="15" Height="15"
                                       Stretch="Uniform"
                                       Margin="0,0,8,0"/>
-                                <TextBlock Text="Настройки CoBu"
+                                <TextBlock Text="{loc:T settings_title}"
                                            FontSize="13.5"
                                            FontWeight="Bold"
                                            Foreground="#FFFFFF"/>
@@ -666,7 +667,7 @@
                         <!-- Right: Close / Hide Window Button -->
                         <Button Grid.Column="2"
                                 Style="{StaticResource FrostedIconButton}"
-                                ToolTip="Скрыть окно (Alt+V)"
+                                ToolTip="{loc:T tip_hide_window}"
                                 Click="CloseButton_Click">
                             <Path Data="{StaticResource GeomClose}"
                                   Stroke="#FFFFFF"
@@ -685,12 +686,35 @@
                               VerticalScrollBarVisibility="Auto"
                               Margin="16,14,16,16">
                     <StackPanel>
+                        <!-- 0. Interface language: Automatic (follows Windows) / English / Russian -->
+                        <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                                    <TextBlock Text="{loc:T set_language}" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="{loc:T set_language_desc}" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <ComboBox x:Name="SettingLanguageCombo"
+                                          Grid.Column="1"
+                                          Width="200"
+                                          VerticalAlignment="Center"
+                                          Style="{StaticResource FrostedComboBox}">
+                                    <ComboBoxItem Tag="Auto" Content="{loc:T lang_auto}"/>
+                                    <ComboBoxItem Tag="en" Content="English"/>
+                                    <ComboBoxItem Tag="ru" Content="Русский"/>
+                                </ComboBox>
+                            </Grid>
+                        </Border>
+
                         <!-- 1. Always On Top Toggle -->
                         <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
                             <Grid>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Поверх всех приложений" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-                                    <TextBlock Text="Окно не перекрывается другими программами" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{loc:T set_ontop}" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="{loc:T set_ontop_desc}" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
                                 </StackPanel>
                                 <CheckBox x:Name="SettingAlwaysOnTop"
                                           Style="{StaticResource FrostedToggleSwitch}"
@@ -702,8 +726,8 @@
                         <!-- 2. Hotkey Selection -->
                         <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
                             <StackPanel>
-                                <TextBlock Text="Комбинация клавиш вызова" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-                                <TextBlock Text="Открывает и скрывает окно из любого места" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,8"/>
+                                <TextBlock Text="{loc:T set_hotkey}" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                <TextBlock Text="{loc:T set_hotkey_desc}" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,8"/>
                                 <ComboBox x:Name="SettingHotkeyCombo"
                                           Style="{StaticResource FrostedComboBox}">
                                     <ComboBoxItem Content="Alt + V"/>
@@ -717,13 +741,13 @@
                         <!-- 3. Animation Style -->
                         <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
                             <StackPanel>
-                                <TextBlock Text="Стиль открытия окна" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-                                <TextBlock Text="Плавный выезд из трея или мягкий переход" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,8"/>
+                                <TextBlock Text="{loc:T set_anim}" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                <TextBlock Text="{loc:T set_anim_desc}" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,8"/>
                                 <ComboBox x:Name="SettingAnimationCombo"
                                           Style="{StaticResource FrostedComboBox}">
-                                    <ComboBoxItem Content="Juicy (Выезд из трея)"/>
-                                    <ComboBoxItem Content="Плавный Fade"/>
-                                    <ComboBoxItem Content="Без анимации"/>
+                                    <ComboBoxItem Tag="Juicy" Content="{loc:T anim_juicy}"/>
+                                    <ComboBoxItem Tag="Fade" Content="{loc:T anim_fade}"/>
+                                    <ComboBoxItem Tag="None" Content="{loc:T anim_none}"/>
                                 </ComboBox>
                             </StackPanel>
                         </Border>
@@ -732,8 +756,8 @@
                         <Border Background="#16FFFFFF" BorderBrush="#20FFFFFF" BorderThickness="1" CornerRadius="14" Padding="14,10" Margin="0,0,0,10">
                             <Grid>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Автозапуск с Windows" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-                                    <TextBlock Text="Запускать CoBu тихо в трее при старте системы" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{loc:T set_autostart}" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="{loc:T set_autostart_desc}" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
                                 </StackPanel>
                                 <CheckBox x:Name="SettingAutostart"
                                           Style="{StaticResource FrostedToggleSwitch}"
@@ -750,8 +774,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock Text="Лимит истории буфера" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-                                    <TextBlock Text="Максимум записей (0 — без ограничений)" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{loc:T set_limit}" FontSize="13" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="{loc:T set_limit_desc}" FontSize="11" Foreground="#A0FFFFFF" Margin="0,2,0,0"/>
                                 </StackPanel>
                                 <Border Grid.Column="1"
                                         Background="#25FFFFFF"
@@ -779,7 +803,7 @@
                         </Border>
 
                         <!-- Save / Apply Button -->
-                        <Button Content="Сохранить настройки"
+                        <Button Content="{loc:T set_save}"
                                 Foreground="#FFFFFF"
                                 BorderThickness="0"
                                 FontWeight="Bold"

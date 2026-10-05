@@ -33,10 +33,13 @@ namespace CoBu
 
         public MainWindow()
         {
-            InitializeComponent();
-
+            // Settings first: the UI language must be known before the XAML is loaded
             _storageService = new StorageService();
             _settingsService = new SettingsService(_storageService.BaseStoragePath);
+            Loc.Instance.SetLanguage(_settingsService.Current.Language);
+
+            InitializeComponent();
+
             _clipboardMonitor = new ClipboardMonitor();
             _hotkeyManager = new HotkeyManager();
             _trayIconManager = new TrayIconManager();
@@ -261,7 +264,7 @@ namespace CoBu
 
             string anim = _settingsService.Current.AnimationStyle;
 
-            if (anim == "None" || anim == "Без анимации")
+            if (anim == "None")
             {
                 Top = targetTop;
                 RootBorder.Opacity = 1.0;
@@ -296,7 +299,7 @@ namespace CoBu
                 };
                 RootBorder.BeginAnimation(UIElement.OpacityProperty, fade);
             }
-            else // Juicy (Выезд из трея) - signature smooth spring-loaded slide
+            else // Juicy (slide from the tray) - signature smooth spring-loaded slide
             {
                 // Physical window starts down near/in taskbar (+85px)
                 Top = targetTop + 85;
@@ -344,7 +347,7 @@ namespace CoBu
 
             string anim = _settingsService.Current.AnimationStyle;
 
-            if (anim == "None" || anim == "Без анимации")
+            if (anim == "None")
             {
                 Visibility = Visibility.Hidden;
                 ScheduleTrim();
@@ -463,8 +466,8 @@ namespace CoBu
                 {
                     var sfd = new SaveFileDialog
                     {
-                        Title = "Сохранить изображение в выбранную папку",
-                        Filter = "Изображение PNG (*.png)|*.png|Все файлы (*.*)|*.*",
+                        Title = Loc.T("dlg_save_title"),
+                        Filter = Loc.T("dlg_save_filter"),
                         DefaultExt = ".png",
                         FileName = $"CoBu_Image_{item.Timestamp:yyyyMMdd_HHmmss}.png"
                     };
@@ -483,7 +486,7 @@ namespace CoBu
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show($"Не удалось сохранить файл: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show(Loc.T("err_save", ex.Message), Loc.T("err_title"), MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
@@ -554,23 +557,30 @@ namespace CoBu
             if (SettingHotkeyCombo.SelectedItem == null && SettingHotkeyCombo.Items.Count > 0)
                 SettingHotkeyCombo.SelectedIndex = 0;
 
-            // Set Animation combo selection
-            string curAnim = _settingsService.Current.AnimationStyle;
-            foreach (ComboBoxItem item in SettingAnimationCombo.Items)
-            {
-                string text = item.Content?.ToString() ?? "";
-                if (text.Contains(curAnim) || curAnim.Contains(text))
-                {
-                    SettingAnimationCombo.SelectedItem = item;
-                    break;
-                }
-            }
-            if (SettingAnimationCombo.SelectedItem == null && SettingAnimationCombo.Items.Count > 0)
-                SettingAnimationCombo.SelectedIndex = 0;
+            // Set Animation combo selection (items carry a language-independent Tag)
+            SelectComboByTag(SettingAnimationCombo, _settingsService.Current.AnimationStyle);
+
+            // Set Language combo selection
+            SelectComboByTag(SettingLanguageCombo, _settingsService.Current.Language);
 
             // Open settings directly inside main window
             ClipsView.Visibility = Visibility.Collapsed;
             SettingsView.Visibility = Visibility.Visible;
+        }
+
+        private static void SelectComboByTag(ComboBox combo, string? tag)
+        {
+            combo.SelectedItem = null;
+            foreach (ComboBoxItem item in combo.Items)
+            {
+                if (string.Equals(item.Tag?.ToString(), tag, StringComparison.OrdinalIgnoreCase))
+                {
+                    combo.SelectedItem = item;
+                    break;
+                }
+            }
+            if (combo.SelectedItem == null && combo.Items.Count > 0)
+                combo.SelectedIndex = 0;
         }
 
         private void CloseSettings_Click(object sender, RoutedEventArgs e)
@@ -621,13 +631,19 @@ namespace CoBu
 
             if (SettingAnimationCombo.SelectedItem is ComboBoxItem animItem)
             {
-                string text = animItem.Content?.ToString() ?? "Juicy";
-                _settingsService.Current.AnimationStyle = text.Contains("Fade") ? "Fade" : (text.Contains("Без") ? "None" : "Juicy");
+                _settingsService.Current.AnimationStyle = animItem.Tag?.ToString() ?? "Juicy";
+            }
+
+            if (SettingLanguageCombo.SelectedItem is ComboBoxItem langItem)
+            {
+                _settingsService.Current.Language = langItem.Tag?.ToString() ?? Loc.Auto;
             }
 
             _settingsService.Save();
 
             // Apply immediately
+            Loc.Instance.SetLanguage(_settingsService.Current.Language);
+            _trayIconManager.UpdateTooltip();
             Topmost = _settingsService.Current.AlwaysOnTop;
             HeaderHotkeyBadge.Text = _settingsService.Current.Hotkey;
             _hotkeyManager.ApplyHotkey(_settingsService.Current.Hotkey);
@@ -635,9 +651,15 @@ namespace CoBu
             if (_settingsService.Current.MaxItemsLimit > 0)
             {
                 await _storageService.EnforceLimitAsync(_settingsService.Current.MaxItemsLimit);
-                _filteredView.Refresh();
-                UpdateCountAndPlaceholder();
             }
+
+            // Card texts that are computed in code (time, type, titles) must be re-read in the new language
+            foreach (var clip in _storageService.Items)
+            {
+                clip.NotifyLanguageChanged();
+            }
+            _filteredView.Refresh();
+            UpdateCountAndPlaceholder();
 
             SettingsView.Visibility = Visibility.Collapsed;
             ClipsView.Visibility = Visibility.Visible;

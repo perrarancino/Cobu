@@ -61,8 +61,9 @@ CloseApplications=no
 RestartApplications=no
 
 [Languages]
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+; English first: it is the fallback for every Windows UI language except Russian
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Messages]
 russian.WelcomeLabel1=Добро пожаловать в CoBu

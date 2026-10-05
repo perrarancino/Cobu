@@ -170,10 +170,28 @@ namespace CoBu.Services
                 uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP,
                 uCallbackMessage = WM_TRAYICON,
                 hIcon = _hIcon,
-                szTip = "CoBu — Умный буфер обмена (Alt+V)"
+                szTip = Loc.T("tray_tip")
             };
 
             _isAdded = Shell_NotifyIcon(NIM_ADD, ref nid);
+        }
+
+        /// <summary>Re-reads the tooltip text (after the UI language changed).</summary>
+        public void UpdateTooltip()
+        {
+            if (!_isAdded || _hwnd == IntPtr.Zero)
+                return;
+
+            var nid = new NOTIFYICONDATA
+            {
+                cbSize = Marshal.SizeOf<NOTIFYICONDATA>(),
+                hWnd = _hwnd,
+                uID = 1001,
+                uFlags = NIF_TIP,
+                szTip = Loc.T("tray_tip")
+            };
+
+            Shell_NotifyIcon(NIM_MODIFY, ref nid);
         }
 
         private void RemoveTrayIcon()

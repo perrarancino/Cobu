@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CoBu.Models;
+using CoBu.Services;
 
 namespace CoBu.Converters
 {
@@ -73,12 +74,12 @@ namespace CoBu.Converters
             {
                 return type switch
                 {
-                    ClipType.Image => "Картинка",
-                    ClipType.Text => "Текст",
-                    _ => "Данные"
+                    ClipType.Image => Loc.T("type_image"),
+                    ClipType.Text => Loc.T("type_text"),
+                    _ => Loc.T("type_other")
                 };
             }
-            return "Данные";
+            return Loc.T("type_other");
         }
 
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

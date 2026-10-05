@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using CoBu.Services;
 
 namespace CoBu.Models
 {
@@ -25,8 +26,8 @@ namespace CoBu.Models
 
         [JsonIgnore]
         public string FormattedTime => Timestamp.Date == DateTime.Today
-            ? $"Сегодня, {Timestamp:HH:mm:ss}"
-            : Timestamp.ToString("dd.MM.yyyy HH:mm");
+            ? Loc.T("today", Timestamp.ToString("HH:mm:ss"))
+            : Timestamp.ToString(Loc.Instance.Language == "ru" ? "dd.MM.yyyy HH:mm" : "yyyy-MM-dd HH:mm");
 
         /// <summary>
         /// Full text, kept in memory only for short clips. Long texts live in their .txt file
@@ -146,16 +147,24 @@ namespace CoBu.Models
         [JsonIgnore]
         public string DisplayTitle => Type switch
         {
-            ClipType.Image => $"Изображение {Dimensions} ({FileSize})",
+            ClipType.Image => Loc.T("title_image", Dimensions ?? "", FileSize ?? ""),
             ClipType.Text when !string.IsNullOrWhiteSpace(PreviewText) => 
                 PreviewText.Length > 60 ? PreviewText[..60] + "..." : PreviewText,
-            _ => "Текстовая заметка"
+            _ => Loc.T("title_note")
         };
 
         [JsonIgnore]
         public string FullFilePath => string.IsNullOrWhiteSpace(RelativeFilePath) 
             ? string.Empty 
             : Path.GetFullPath(Path.Combine(CoBu.Services.AppPaths.StorageRoot, RelativeFilePath));
+
+        /// <summary>Tells the UI to re-read texts that are built in code (time, type name, title) after a language switch.</summary>
+        public void NotifyLanguageChanged()
+        {
+            OnPropertyChanged(nameof(FormattedTime));
+            OnPropertyChanged(nameof(DisplayTitle));
+            OnPropertyChanged(nameof(Type));
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
